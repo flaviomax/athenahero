@@ -15,8 +15,110 @@ class QueryExecution(db.Model):
         unique=True,
         nullable=False
     )
-    query = db.Column(
+    query_text = db.Column(
         db.Text,
+        index=False,
+        unique=False, 
+        nullable=False
+    )
+    statement_type = db.Column(
+        db.String(10),
+        index=False,
+        unique=False, 
+        nullable=False
+    )
+    output_location = db.Column(
+        db.Text,
+        index=False,
+        unique=False, 
+        nullable=False
+    )
+    encryption_option = db.Column(
+        db.String(10),
+        index=False,
+        unique=False, 
+        nullable=True
+    )
+    kms_key = db.Column(
+        db.Text,
+        index=False,
+        unique=False, 
+        nullable=True
+    )
+    context_database = db.Column(
+        db.Text,
+        index=False,
+        unique=False, 
+        nullable=True
+    )
+    context_catalog = db.Column(
+        db.Text,
+        index=False,
+        unique=False, 
+        nullable=True
+    )
+    status = db.Column(
+        db.String(10),
+        index=False,
+        unique=False, 
+        nullable=False
+    )
+    last_state_change_reason = db.Column(
+        db.Text,
+        index=False,
+        unique=False, 
+        nullable=True
+    )
+    submission_datetime = db.Column(
+        db.TIMESTAMP,
+        index=False,
+        unique=False, 
+        nullable=False
+    )
+    completion_datetime = db.Column(
+        db.TIMESTAMP,
+        index=False,
+        unique=False, 
+        nullable=False
+    )
+    engine_execution_time_in_millis = db.Column(
+        db.Integer,
+        index=False,
+        unique=False, 
+        nullable=False
+    )
+    total_execution_time_in_millis = db.Column(
+        db.Integer,
+        index=False,
+        unique=False, 
+        nullable=False
+    )
+    query_queue_time_in_millis = db.Column(
+        db.Integer,
+        index=False,
+        unique=False, 
+        nullable=False
+    )
+    query_planning_time_in_millis = db.Column(
+        db.Integer,
+        index=False,
+        unique=False, 
+        nullable=False
+    )
+    service_processing_time_in_millis = db.Column(
+        db.Integer,
+        index=False,
+        unique=False, 
+        nullable=False
+    )
+    data_manifest_location = db.Column(
+        db.Text,
+        index=False,
+        unique=False, 
+        nullable=False
+    )
+    data_scanned_in_bytes = db.Column(
+        db.BigInteger,
         index=False,
         unique=False, 
         nullable=False
