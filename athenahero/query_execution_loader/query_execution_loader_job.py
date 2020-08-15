@@ -2,6 +2,9 @@ import boto3
 import json
 from datetime import datetime, timedelta, timezone
 from athenahero.database.models.query_execution import QueryExecution
+from athenahero import db
+from sqlalchemy.exc import IntegrityError
+from psycopg2.errors import UniqueViolation
 
 def _get_next_query_ids(athena_client, next_token):
     if next_token is not None:
@@ -50,13 +53,12 @@ def _parse_raw_query_execution(raw_query_execution):
         data_scanned_in_bytes=statistics.get('DataScannedInBytes') 
     )
 
-    print(query_execution)
+    return query_execution
     
 
-def get_all_query_executions(deltadays=1):
-    print('starting execution')
+def populate_month_of_executions(deltadays=30):
     athena_client = boto3.client('athena')
-    min_day = datetime.now(timezone.utc) - timedelta(hours=deltadays)
+    min_day = datetime.now(timezone.utc) - timedelta(days=deltadays)
     min_found = datetime.now(timezone.utc)
     next_token = None
     total_executions = []
@@ -68,11 +70,26 @@ def get_all_query_executions(deltadays=1):
         
         # TODO: for v0, we will only be fetching successful queries
         executions = _get_successful_queries(athena_client, next_ids)
+        _save_batch_query_executions_to_db(executions)
         total_executions += executions
         min_found = min([i['Status'].get('CompletionDateTime') for i in executions])
         print(min_found)
         
     return total_executions
+
+def _save_batch_query_executions_to_db(batch_query_executions):
+    for raw_query_execution in batch_query_executions:
+        query_execution = _parse_raw_query_execution(raw_query_execution)
+        _save_query_execution_to_db(query_execution)
+
+def _save_query_execution_to_db(query_execution):
+    db.session.add(query_execution)
+    try:
+        db.session.commit()
+    except IntegrityError as e:
+        assert isinstance(e.orig, UniqueViolation)
+        db.session.rollback()
+        
 
 def save_execution_to_file():
     executions = get_all_query_executions()

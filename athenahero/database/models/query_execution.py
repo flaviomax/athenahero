@@ -85,7 +85,7 @@ class QueryExecution(db.Model):
         db.Integer,
         index=False,
         unique=False, 
-        nullable=False
+        nullable=True
     )
     total_execution_time_in_millis = db.Column(
         db.Integer,
@@ -97,25 +97,25 @@ class QueryExecution(db.Model):
         db.Integer,
         index=False,
         unique=False, 
-        nullable=False
+        nullable=True
     )
     query_planning_time_in_millis = db.Column(
         db.Integer,
         index=False,
         unique=False, 
-        nullable=False
+        nullable=True
     )
     service_processing_time_in_millis = db.Column(
         db.Integer,
         index=False,
         unique=False, 
-        nullable=False
+        nullable=True
     )
     data_manifest_location = db.Column(
         db.Text,
         index=False,
         unique=False, 
-        nullable=False
+        nullable=True
     )
     data_scanned_in_bytes = db.Column(
         db.BigInteger,
