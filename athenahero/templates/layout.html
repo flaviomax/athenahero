@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
     <script src="{{ url_for('static', filename='js/Chart.bundle.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/testChart.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/basicChart.js') }}"></script>
   </head>
     
   <body>
@@ -20,7 +20,7 @@
             <div class="col-3" id="left-menu">
                 <a href="{{ url_for('home_bp.home') }}" class="h3" style="padding-left: 10px;color: #212529;">Dashboard</a>
             </div>
-            <div class="col-9" style="background-color: #eeeeee;">
+            <div class="col-9" style="background-color: #eeeeee;padding-top: 10px;">
                 {% block content %}{% endblock %}
             </div>
         </div>
