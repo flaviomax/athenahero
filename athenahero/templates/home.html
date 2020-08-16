@@ -5,6 +5,9 @@
 <canvas id="testChart" width="9" height="4"></canvas>
 <p id="caption">Total GB read the last 30 days.</p>
 <script>
-    basicChart({canvasId:"testChart", legend:"Test Data", labels:[1, 2], values:[1, 2], chartType:'bar'})
+    let vars = {{ data_read_by_day_vars|tojson }};
+    vars.canvasId = "testChart";
+    vars.chartType = "bar";
+    basicChart(vars);
 </script>
 {% endblock %}

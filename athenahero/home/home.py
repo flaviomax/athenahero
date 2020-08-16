@@ -15,5 +15,10 @@ def home():
     labels, values = data_read_by_day()
     
     legend = 'Data Scanned in GB'
+    data_read_by_day_vars = {
+        'values': values,
+        'labels': [i.strftime('%Y-%m-%d') for i in labels],
+        'legend':legend
+    }
 
-    return render_template('home.html', values=values, labels=labels, legend=legend)
+    return render_template('home.html', data_read_by_day_vars=data_read_by_day_vars)
