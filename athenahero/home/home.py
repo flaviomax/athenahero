@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template
-
+from .monthly_chart_data_generator import data_read_by_day
 
 # Blueprint Configuration
 home_bp = Blueprint(
@@ -12,4 +12,8 @@ home_bp = Blueprint(
 def home():
     """Landing page."""
 
-    return render_template('home.html')
+    labels, values = data_read_by_day()
+    
+    legend = 'Data Scanned in GB'
+
+    return render_template('home.html', values=values, labels=labels, legend=legend)
