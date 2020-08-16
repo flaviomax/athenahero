@@ -12,7 +12,4 @@ home_bp = Blueprint(
 def home():
     """Landing page."""
 
-    return render_template('home.html',
-                           title="Jinja Demo Site",
-                           description="Smarter page templates \
-                                with Flask & Jinja.")
+    return render_template('home.html')

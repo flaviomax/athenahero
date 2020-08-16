@@ -143,3 +143,4 @@ cython_debug/
 # data
 *.sql
 *.json
+*.DS_Store

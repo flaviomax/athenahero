@@ -2,15 +2,27 @@
 <html>
     
   <head>
-    <title>{{title}}</title>
+    <title>AthenaHero</title>
     <meta charset="utf-8">
-    <meta name="description" content={{description}}>
-    <link rel="shortcut icon" href="/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<link href="{{ url_for('static', filename='css/bootstrap.css') }}" rel="stylesheet">
   </head>
     
   <body>
-    {% include 'navigation.html' %}
-    {% block content %}{% endblock %}
+    <div class="container" id="title", style="padding-top: 20px;">
+        <a href="{{ url_for('home_bp.home') }}" class="h1">AthenaHero</a>
+        <hr/>
+    </div>
+    <div class="container" id="body_grid">
+        <div class="row">
+            <div class="col-xs-3" id="left-menu">
+                <a href="{{ url_for('home_bp.home') }}" class="h3" style="padding-left: 10px;">Dashboard</a>
+            </div>
+            <div class="col-xs-9" style="background-color: #eeeeee;">
+                {% block content %}{% endblock %}
+            </div>
+        </div>
+    </div>
   </body>
     
 </html>
