@@ -12,15 +12,15 @@
     
   <body>
     <div class="container" id="title", style="padding-top: 20px;">
-        <a href="{{ url_for('home_bp.home') }}" class="h1">AthenaHero</a>
+        <a href="{{ url_for('home_bp.home') }}" class="h1" style="color: #212529;">AthenaHero</a>
         <hr/>
     </div>
     <div class="container" id="body_grid">
         <div class="row">
-            <div class="col-xs-3" id="left-menu">
-                <a href="{{ url_for('home_bp.home') }}" class="h3" style="padding-left: 10px;">Dashboard</a>
+            <div class="col-3" id="left-menu">
+                <a href="{{ url_for('home_bp.home') }}" class="h3" style="padding-left: 10px;color: #212529;">Dashboard</a>
             </div>
-            <div class="col-xs-9" style="background-color: #eeeeee;">
+            <div class="col-9" style="background-color: #eeeeee;">
                 {% block content %}{% endblock %}
             </div>
         </div>
