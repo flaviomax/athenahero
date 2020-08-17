@@ -71,7 +71,7 @@ class QueryExecution(db.Model):
     )
     submission_datetime = db.Column(
         db.TIMESTAMP,
-        index=False,
+        index=True,
         unique=False, 
         nullable=False
     )
@@ -122,6 +122,13 @@ class QueryExecution(db.Model):
         index=False,
         unique=False, 
         nullable=False
+    )
+    # TODO: change nullable to False
+    workgroup  = db.Column(
+        db.Text,
+        index=False,
+        unique=False, 
+        nullable=True
     )
 
     def __repr__(self):

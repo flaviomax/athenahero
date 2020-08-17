@@ -1,7 +1,23 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-<h4>Content</h4>
+<div class="row">
+    <div class="col">
+        <h4>Total Data Scanned:</h4>
+        <h2 style="display: inline;">{{ "%0.2f" | format(total_data_scanned|float) }}</h2> GB
+        <br><p><h5>Cost:</h5>
+        <h3 style="display: inline;">{{ "%0.2f" | format(total_data_scanned / 200|float) }}</h3> USD</p>
+    </div>
+    <div class="col">
+        <canvas id="workgroupChart" width="4" height="2"></canvas>
+        <script>
+            let vars2 = {{ data_read_by_workgroup_vars|tojson }};
+            vars2.canvasId = "workgroupChart";
+            vars2.chartType = "horizontalBar";
+            basicChart(vars2);
+        </script>
+    </div>
+</div>
 <canvas id="testChart" width="9" height="4"></canvas>
 <p id="caption">Total GB read the last 30 days.</p>
 <script>
