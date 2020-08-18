@@ -1,6 +1,7 @@
 """Data models."""
 from athenahero import db
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy import func, Index
 import uuid
 
 
@@ -133,3 +134,7 @@ class QueryExecution(db.Model):
 
     def __repr__(self):
         return f'<Query Execution {self.id}>'
+
+# TODO: do not forget to manually add this migration on first deploy
+# read https://stackoverflow.com/questions/42153301/flask-sqlalchemy-lower-case-index-skipping-functional-not-supported-by-sqlalc
+Index('query_executions_query_text_md5_index', func.md5(QueryExecution.query_text))

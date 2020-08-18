@@ -34,11 +34,10 @@ def data_read_by_workgroup():
 
 def get_total_read_naive_queries():
     # TODO: check semicolon impact here
-    # TODO: find some way to optimize this 
     naive_categorized = db.session.query(
         case([(
                 func.lag(QueryExecution.data_scanned_in_bytes).over(
-                    partition_by=QueryExecution.query_text,
+                    partition_by=func.md5(QueryExecution.query_text),
                     order_by=QueryExecution.submission_datetime
                 ) == QueryExecution.data_scanned_in_bytes,
                 True
@@ -49,7 +48,7 @@ def get_total_read_naive_queries():
         QueryExecution.data_scanned_in_bytes
     ).filter(
         # TODO: adjust timeframe
-        QueryExecution.submission_datetime >= datetime.today() - timedelta(days=7)
+        QueryExecution.submission_datetime >= datetime.today() - timedelta(days=30)
     ).subquery()
 
     total_read_naive_queries = db.session.query(
@@ -57,7 +56,5 @@ def get_total_read_naive_queries():
     ).filter(
         naive_categorized.c.is_naive == True
     ).first()
-
-    print(total_read_naive_queries)
 
     return total_read_naive_queries

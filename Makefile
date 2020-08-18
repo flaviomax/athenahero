@@ -2,6 +2,7 @@
 	# FLASK_APP=athenahero flask db migrate -m "mensgaem"
 	#  ele olha o estado atual do banco e cria as migrações sozinho!!
 	# FLASK_APP=athenahero flask db upgrade roda as migracoes
+	# se precisar ser manual, usar `revision` ao inves de `migrate`
 
 start: database-setup
 	gunicorn -b localhost:5000 -w 5 --preload wsgi:app
