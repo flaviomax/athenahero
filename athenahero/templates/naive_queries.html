@@ -1,0 +1,8 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<h4>Naive Queries</h4>
+<p>A query is considered <b>Naive</b> when the exact same query has been run before, reading the exact same amount of data. 99% of the times, a Naive query means a waste of money!</p>
+<h4>{{ "%0.2f" | format(total_read_naive_queries|float) }}</h4>
+
+{% endblock %}

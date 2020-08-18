@@ -18,7 +18,8 @@
     <div class="container" id="body_grid">
         <div class="row">
             <div class="col-3" id="left-menu">
-                <a href="{{ url_for('home_bp.home') }}" class="h3" style="padding-left: 10px;color: #212529;">Dashboard</a>
+                <p><a href="{{ url_for('home_bp.home') }}" class="h3" style="padding-left: 10px;color: #212529;">Overview</a></p>
+                <p><a href="{{ url_for('home_bp.naive_queries') }}" class="h5" style="padding-left: 10px;color: #212529;">Naive Queries</a></p>
             </div>
             <div class="col-9" style="background-color: #eeeeee;padding-top: 10px;">
                 {% block content %}{% endblock %}
