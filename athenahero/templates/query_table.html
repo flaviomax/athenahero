@@ -1,0 +1,28 @@
+<table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Count</th>
+        <th scope="col">Average GB Read</th>
+        <th scope="col">Total GB Read</th>
+        <th scope="col">Total Query Cost</th>
+      </tr>
+    </thead>
+    <tbody>
+        {% for row in most_expensive_queries %}
+            <tr>
+                <th scope="row">{{ loop.index }}</th>
+                <td>{{ row.1 }}</td>
+                <td>{{ "%0.2f" | format(row.2|float) }}</td>
+                <td>{{ "%0.2f" | format(row.3|float) }}</td>
+                <th>{{ "%0.2f" | format((row.3/200.0)|float) }} USD</th>
+                <!-- {% for cell in row %}
+                    <td>{{ cell }}</td>
+                {% endfor %} -->
+                </tr>
+                <tr>
+                    <td colspan="5">{{ row.0 }}</td> 
+            </tr>
+        {% endfor %}
+    </tbody>
+  </table>
