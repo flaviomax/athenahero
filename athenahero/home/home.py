@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template
-from .monthly_chart_data_generator import data_read_by_day, data_read_by_workgroup, get_total_read_naive_queries
+from .monthly_chart_data_generator import data_read_by_day, data_read_by_workgroup, get_naive_queries_data
 
 # Blueprint Configuration
 home_bp = Blueprint(
@@ -42,8 +42,11 @@ def home():
 
 @home_bp.route('/naive-queries')
 def naive_queries():
-    total_read_naive_queries = get_total_read_naive_queries()[0]
+    naive_queries_data = get_naive_queries_data()
+    
     return render_template(
         'naive_queries.html',
-        total_read_naive_queries=total_read_naive_queries
+        total_read_naive_queries=naive_queries_data["total_bytes_read"][0],
+        # TODO: do not index this
+        most_expensive_queries=naive_queries_data["most_expensive_queries"]
     )

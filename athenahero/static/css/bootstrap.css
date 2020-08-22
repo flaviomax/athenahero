@@ -1674,6 +1674,7 @@ pre code {
 .table thead th {
   vertical-align: bottom;
   border-bottom: 2px solid #dee2e6;
+  background-color: rgba(75,192,192,0.4);
 }
 
 .table tbody + tbody {
@@ -1706,7 +1707,7 @@ pre code {
   border: 0;
 }
 
-.table-striped tbody tr:nth-of-type(odd) {
+.table-striped tbody tr:nth-of-type(even) {
   background-color: rgba(0, 0, 0, 0.05);
 }
 

@@ -32,7 +32,7 @@ def data_read_by_workgroup():
     labels, values = zip(*full_data)
     return labels, values
 
-def get_total_read_naive_queries():
+def get_naive_queries_data():
     # TODO: check semicolon impact here
     naive_categorized = db.session.query(
         case([(
@@ -47,14 +47,30 @@ def get_total_read_naive_queries():
         QueryExecution.query_text,
         QueryExecution.data_scanned_in_bytes
     ).filter(
-        # TODO: adjust timeframe
         QueryExecution.submission_datetime >= datetime.today() - timedelta(days=30)
     ).subquery()
 
-    total_read_naive_queries = db.session.query(
+    total_bytes_read = db.session.query(
         func.sum(naive_categorized.c.data_scanned_in_bytes) / 1000000000.0
     ).filter(
         naive_categorized.c.is_naive == True
     ).first()
 
-    return total_read_naive_queries
+# we are assuming no hash collisions here
+    most_expensive_naive_queries = db.session.query(
+        naive_categorized.c.query_text,
+        (func.avg(naive_categorized.c.data_scanned_in_bytes) / 1000000000.0).label('avg_gb_read'),
+        (func.sum(naive_categorized.c.data_scanned_in_bytes) / 1000000000.0).label('total_gb_read')
+    ).filter(
+        naive_categorized.c.is_naive == True
+    ).group_by(
+        func.md5(naive_categorized.c.query_text),
+        naive_categorized.c.query_text
+    ).order_by(
+        desc('total_gb_read')
+    ).limit(10).all()
+
+    return {
+        "total_bytes_read": total_bytes_read,
+        "most_expensive_queries": most_expensive_naive_queries
+    }

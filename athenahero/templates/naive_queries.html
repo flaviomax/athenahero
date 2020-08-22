@@ -1,8 +1,33 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-<h4>Naive Queries</h4>
+<h4>Total GB read by Naive Queries: </h4>
+<h2>{{ "%0.2f" | format(total_read_naive_queries|float) }} GB</h2>
 <p>A query is considered <b>Naive</b> when the exact same query has been run before, reading the exact same amount of data. 99% of the times, a Naive query means a waste of money!</p>
-<h4>{{ "%0.2f" | format(total_read_naive_queries|float) }}</h4>
+<br><h6>Most Expensive Naive Queries</h6>
+<table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Average GB Read</th>
+        <th scope="col">Total GB Read</th>
+      </tr>
+    </thead>
+    <tbody>
+        {% for row in most_expensive_queries %}
+            <tr>
+                <th scope="row">{{ loop.index }}</th>
+                <td>{{ "%0.2f" | format(row.1|float) }}</td>
+                <th>{{ "%0.2f" | format(row.2|float) }}</th>
+                <!-- {% for cell in row %}
+                    <td>{{ cell }}</td>
+                {% endfor %} -->
+                </tr>
+                <tr>
+                    <td colspan="3">{{ row.0 }}</td> 
+            </tr>
+        {% endfor %}
+    </tbody>
+  </table>
 
 {% endblock %}
