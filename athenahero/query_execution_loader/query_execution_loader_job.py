@@ -1,5 +1,6 @@
 import boto3
 import json
+import logging
 from datetime import datetime, timedelta, timezone
 from athenahero.database.models.query_execution import QueryExecution
 from athenahero import db
@@ -57,6 +58,7 @@ def _parse_raw_query_execution(raw_query_execution):
     
 
 def populate_month_of_executions(deltadays=30):
+    print('[query_execution_job] Starting')
     athena_client = boto3.client('athena')
     min_day = datetime.now(timezone.utc) - timedelta(days=deltadays)
     min_found = datetime.now(timezone.utc)
@@ -71,11 +73,10 @@ def populate_month_of_executions(deltadays=30):
         # TODO: for v0, we will only be fetching successful queries
         executions = _get_successful_queries(athena_client, next_ids)
         _save_batch_query_executions_to_db(executions)
-        total_executions += executions
         min_found = min([i['Status'].get('CompletionDateTime') for i in executions])
-        print(min_found)
+        print(f"[query_execution_job] Fetched queries up to {min_found}")
         
-    return total_executions
+    print("[query_execution_job] Done!")
 
 def _save_batch_query_executions_to_db(batch_query_executions):
     for raw_query_execution in batch_query_executions:

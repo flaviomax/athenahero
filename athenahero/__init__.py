@@ -9,6 +9,7 @@ def create_app(config_file='config/config.py'):
     app.config.from_pyfile(config_file)
 
     db.init_app(app)
+    db.app = app
 
     with app.app_context():
         from .home import home
@@ -18,9 +19,8 @@ def create_app(config_file='config/config.py'):
 
         # Register Blueprints
         app.register_blueprint(home.home_bp)
-        # app.register_blueprint(query_execution_loader_controller.query_execution_loader_bp)
 
         # TODO: make this download the last 30 dyas when app is started, considering it may have already been done
-        # query_execution_loader.query_execution_loader_job.populate_month_of_executions()
+        query_execution_loader.register_query_execution_job()
 
         return app
