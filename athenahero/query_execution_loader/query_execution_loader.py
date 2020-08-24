@@ -2,13 +2,16 @@ import time
 import atexit
 
 from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
 from . import query_execution_loader_job
 from datetime import datetime, timedelta
 from flask import current_app
 
 def register_query_execution_job():
-    if current_app.config['ENV'] == 'production':
-        scheduler = BackgroundScheduler()
+    # if current_app.config['ENV'] == 'production':
+        scheduler = BackgroundScheduler(
+            jobstores={}
+        )
         scheduler.add_job(
             name='last_30_days_updater',
             id='last_30_days_updater',
@@ -23,4 +26,4 @@ def register_query_execution_job():
         scheduler.start()
 
         # Shut down the scheduler when exiting the app
-        atexit.register(lambda: scheduler.shutdown(wait=False))
+        atexit.register(lambda: scheduler.shutdown())

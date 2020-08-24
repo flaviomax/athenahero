@@ -1,8 +1,14 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+import logging
 
 db = SQLAlchemy()
+logging.basicConfig(level=logging.INFO)
+
+# TODO:
+# basic auth
+# write tests
 
 def create_app(config_file='config/config.py'):
     app = Flask(__name__)

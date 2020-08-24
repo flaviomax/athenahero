@@ -8,8 +8,7 @@ start: database-setup
 	gunicorn -b localhost:5000 -w 5 --preload wsgi:app
 
 start-dev: database-setup
-	FLASK_ENV=development flask run 
-	# --no-reload
+	FLASK_ENV=development flask run --no-reload
 
 database-setup:
 	FLASK_APP=athenahero flask db upgrade
