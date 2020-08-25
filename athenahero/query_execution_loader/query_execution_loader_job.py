@@ -1,4 +1,4 @@
-import json
+"""Module for Fetching all query execution data from Athena."""
 import logging
 from datetime import datetime, timedelta, timezone
 
@@ -75,7 +75,6 @@ def populate_month_of_executions(deltadays=30):
     min_day = datetime.now(timezone.utc) - timedelta(days=deltadays)
     min_found = datetime.now(timezone.utc)
     next_token = None
-    total_executions = []
     all_workgroups = _list_all_workgroups(athena_client)
 
     for workgroup in all_workgroups:
@@ -109,13 +108,3 @@ def _save_query_execution_to_db(query_execution):
     except IntegrityError as e:
         assert isinstance(e.orig, UniqueViolation)
         db.session.rollback()
-
-
-def save_execution_to_file():
-    executions = get_all_query_executions()
-    with open("uau.json", "w") as f:
-        f.write(json.dumps(executions, indent=4, sort_keys=True, default=str))
-
-
-if __name__ == "__main__":
-    save_execution_to_file()

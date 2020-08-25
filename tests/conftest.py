@@ -1,5 +1,3 @@
-import os
-
 # Bcrypt algorithm hashing rounds (reduced for testing purposes only!)
 BCRYPT_LOG_ROUNDS = 4
 

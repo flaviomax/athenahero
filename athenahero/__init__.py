@@ -22,11 +22,10 @@ def create_app(config_file="config/config.py"):
     db.app = app
 
     with app.app_context():
-        from .database.models import query_execution
         from .home import home
         from .query_execution_loader import query_execution_loader
 
-        migrate = Migrate(app, db)
+        migrate = Migrate(app, db)  # noqa: F841
 
         # Register Blueprints
         app.register_blueprint(home.home_bp)

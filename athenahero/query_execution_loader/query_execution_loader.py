@@ -1,8 +1,6 @@
 import atexit
-import time
 from datetime import datetime, timedelta
 
-from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
 from apscheduler.schedulers.background import BackgroundScheduler
 from flask import current_app
 

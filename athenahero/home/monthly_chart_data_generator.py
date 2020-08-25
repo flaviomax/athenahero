@@ -88,7 +88,7 @@ def get_naive_queries_data():
 
     total_bytes_read = (
         db.session.query(func.sum(naive_categorized.c.data_scanned_in_bytes) / 1000000000.0)
-        .filter(naive_categorized.c.is_naive == True)
+        .filter(naive_categorized.c.is_naive == True)  # noqa: E712
         .first()
     )
 
@@ -100,7 +100,7 @@ def get_naive_queries_data():
             (func.avg(naive_categorized.c.data_scanned_in_bytes) / 1000000000.0).label("avg_gb_read"),
             (func.sum(naive_categorized.c.data_scanned_in_bytes) / 1000000000.0).label("total_gb_read"),
         )
-        .filter(naive_categorized.c.is_naive == True)
+        .filter(naive_categorized.c.is_naive == True)  # noqa: E712
         .group_by(func.md5(naive_categorized.c.query_text), naive_categorized.c.query_text)
         .order_by(desc("total_gb_read"))
         .limit(10)
