@@ -1,3 +1,4 @@
+"""Deploy AthenaHero."""
 import logging
 
 from flask import Flask
@@ -11,7 +12,9 @@ logging.basicConfig(level=logging.INFO)
 # basic auth
 # write tests
 
-def create_app(config_file='config/config.py'):
+
+def create_app(config_file="config/config.py"):
+    """Athenahero Flask App factory."""
     app = Flask(__name__)
     app.config.from_pyfile(config_file)
 
@@ -22,6 +25,7 @@ def create_app(config_file='config/config.py'):
         from .database.models import query_execution
         from .home import home
         from .query_execution_loader import query_execution_loader
+
         migrate = Migrate(app, db)
 
         # Register Blueprints
