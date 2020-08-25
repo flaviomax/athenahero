@@ -1,11 +1,13 @@
-import time
 import atexit
-
-from apscheduler.schedulers.background import BackgroundScheduler
-from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
-from . import query_execution_loader_job
+import time
 from datetime import datetime, timedelta
+
+from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
+from apscheduler.schedulers.background import BackgroundScheduler
 from flask import current_app
+
+from . import query_execution_loader_job
+
 
 def register_query_execution_job():
     if current_app.config['ENV'] == 'production':

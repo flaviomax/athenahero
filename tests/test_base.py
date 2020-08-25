@@ -1,11 +1,13 @@
 import os
 import uuid
+from datetime import datetime
 
 import pytest
-from datetime import datetime
+
 import athenahero
-from athenahero.database.models.query_execution import QueryExecution
 from athenahero import db as _db
+from athenahero.database.models.query_execution import QueryExecution
+
 
 @pytest.fixture(scope='session')
 def app(request):

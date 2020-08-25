@@ -1,11 +1,14 @@
-import boto3
 import json
 import logging
 from datetime import datetime, timedelta, timezone
-from athenahero.database.models.query_execution import QueryExecution
-from athenahero import db
-from sqlalchemy.exc import IntegrityError
+
+import boto3
 from psycopg2.errors import UniqueViolation
+from sqlalchemy.exc import IntegrityError
+
+from athenahero import db
+from athenahero.database.models.query_execution import QueryExecution
+
 
 def _get_next_query_ids(athena_client, next_token, workgroup):
     if next_token is not None:

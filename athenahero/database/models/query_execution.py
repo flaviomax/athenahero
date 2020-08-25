@@ -1,8 +1,10 @@
 """Data models."""
-from athenahero import db
-from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy import func, Index
 import uuid
+
+from sqlalchemy import Index, func
+from sqlalchemy.dialects.postgresql import UUID
+
+from athenahero import db
 
 
 class QueryExecution(db.Model):

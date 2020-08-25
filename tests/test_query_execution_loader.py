@@ -1,6 +1,10 @@
 import uuid
-from .test_base import (app, db, session)
-from athenahero.query_execution_loader.query_execution_loader_job import _parse_raw_query_execution
+
+from athenahero.query_execution_loader.query_execution_loader_job import \
+    _parse_raw_query_execution
+
+from .test_base import app, db, session
+
 
 def test_query_execution_parser(session):
     temp_uuid = uuid.uuid4()

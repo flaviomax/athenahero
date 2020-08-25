@@ -1,8 +1,11 @@
-from athenahero.database.models.query_execution import QueryExecution
 from datetime import datetime, timedelta
+
+from sqlalchemy import Date, case, desc
 from sqlalchemy.sql import func
-from sqlalchemy import Date, desc, case
-from athenahero import db 
+
+from athenahero import db
+from athenahero.database.models.query_execution import QueryExecution
+
 
 def data_read_by_day():
     full_data = db.session.query(

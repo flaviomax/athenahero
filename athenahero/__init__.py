@@ -1,7 +1,8 @@
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
 import logging
+
+from flask import Flask
+from flask_migrate import Migrate
+from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 logging.basicConfig(level=logging.INFO)
@@ -18,9 +19,9 @@ def create_app(config_file='config/config.py'):
     db.app = app
 
     with app.app_context():
+        from .database.models import query_execution
         from .home import home
         from .query_execution_loader import query_execution_loader
-        from .database.models import query_execution
         migrate = Migrate(app, db)
 
         # Register Blueprints

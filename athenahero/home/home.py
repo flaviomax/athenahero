@@ -1,7 +1,13 @@
-from flask import Blueprint, render_template, request, make_response
-from athenahero.config import config
 from functools import wraps
-from .monthly_chart_data_generator import data_read_by_day, data_read_by_workgroup, get_naive_queries_data, get_queries_data
+
+from flask import Blueprint, make_response, render_template, request
+
+from athenahero.config import config
+
+from .monthly_chart_data_generator import (data_read_by_day,
+                                           data_read_by_workgroup,
+                                           get_naive_queries_data,
+                                           get_queries_data)
 
 # Blueprint Configuration
 home_bp = Blueprint(

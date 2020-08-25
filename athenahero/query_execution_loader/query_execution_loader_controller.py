@@ -1,8 +1,9 @@
 import json
+
 from flask import Blueprint, make_response, request
+
 from athenahero import db
 from athenahero.database.models.query_execution import QueryExecution
-
 
 # Blueprint Configuration
 query_execution_loader_bp = Blueprint(
