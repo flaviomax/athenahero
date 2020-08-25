@@ -9,7 +9,6 @@ db = SQLAlchemy()
 logging.basicConfig(level=logging.INFO)
 
 # TODO:
-# basic auth
 # write tests
 
 
@@ -30,7 +29,7 @@ def create_app(config_file="config/config.py"):
         # Register Blueprints
         app.register_blueprint(home.home_bp)
 
-        # TODO: make this download the last 30 dyas when app is started, considering it may have already been done
+        # Register Jobs
         query_execution_loader.register_query_execution_job()
 
         return app

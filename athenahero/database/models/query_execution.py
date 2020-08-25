@@ -30,7 +30,6 @@ class QueryExecution(db.Model):
     service_processing_time_in_millis = db.Column(db.Integer, index=False, unique=False, nullable=True)
     data_manifest_location = db.Column(db.Text, index=False, unique=False, nullable=True)
     data_scanned_in_bytes = db.Column(db.BigInteger, index=False, unique=False, nullable=False)
-    # TODO: change nullable to False
     workgroup = db.Column(db.Text, index=False, unique=False, nullable=False)
 
     def __repr__(self):
