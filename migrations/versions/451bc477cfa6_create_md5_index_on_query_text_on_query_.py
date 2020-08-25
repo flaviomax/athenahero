@@ -1,8 +1,8 @@
-"""create query_text md5 hash
+"""create md5 index on query_text on query_executions
 
-Revision ID: c53f4d70de26
-Revises: 68667e0da916
-Create Date: 2020-08-18 07:34:53.077349
+Revision ID: 451bc477cfa6
+Revises: 9665fcbf9b01
+Create Date: 2020-08-24 20:50:55.846047
 
 """
 from alembic import op
@@ -10,8 +10,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'c53f4d70de26'
-down_revision = '68667e0da916'
+revision = '451bc477cfa6'
+down_revision = '9665fcbf9b01'
 branch_labels = None
 depends_on = None
 

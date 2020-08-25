@@ -1,4 +1,6 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, request, make_response
+from athenahero.config import config
+from functools import wraps
 from .monthly_chart_data_generator import data_read_by_day, data_read_by_workgroup, get_naive_queries_data, get_queries_data
 
 # Blueprint Configuration
@@ -8,7 +10,31 @@ home_bp = Blueprint(
     static_folder='static'
 )
 
+def auth_required(f):
+    @wraps(f)
+    def check_auth(*args, **kwargs):
+        if config.ATHENAHERO_USERNAME is None and config.ATHENAHERO_PASSWORD is None:
+            return f(*args, **kwargs)
+        
+        auth = request.authorization
+        if (
+            auth is not None and 
+            auth.username is not None and
+            auth.password is not None and
+            auth.username == config.ATHENAHERO_USERNAME and 
+            auth.password == config.ATHENAHERO_PASSWORD
+        ):
+            return f(*args, **kwargs)
+        
+        return make_response(
+            "Login Invalid",
+            401,
+            {'WWW-Authenticate': 'Basic realm="Login Required"'}
+        )
+    return check_auth
+
 @home_bp.route('/')
+@auth_required
 def home():
     """Landing page."""
 
@@ -41,6 +67,7 @@ def home():
     )
 
 @home_bp.route('/cost/queries')
+@auth_required
 def queries():
     most_expensive_queries = get_queries_data()
     
@@ -50,6 +77,7 @@ def queries():
     )
 
 @home_bp.route('/cost/naive-queries')
+@auth_required
 def naive_queries():
     naive_queries_data = get_naive_queries_data()
     

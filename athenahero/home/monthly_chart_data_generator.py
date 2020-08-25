@@ -10,12 +10,15 @@ def data_read_by_day():
         func.sum(QueryExecution.data_scanned_in_bytes) / 1000000000.0
     ).filter(
         QueryExecution.submission_datetime >= datetime.today() - timedelta(days=30)
-    ). group_by(
+    ).group_by(
         QueryExecution.submission_datetime.cast(Date)
     ).order_by(
         'date'
     ).all()
-    labels, values = zip(*full_data)
+    if full_data:
+        labels, values = zip(*full_data)
+    else:
+        labels, values = [], []
     return labels, values
 
 def data_read_by_workgroup():
@@ -29,7 +32,10 @@ def data_read_by_workgroup():
     ).order_by(
         desc('total_data_scanned')
     ).all()
-    labels, values = zip(*full_data)
+    if full_data:
+        labels, values = zip(*full_data)
+    else:
+        labels, values = [], []
     return labels, values
 
 def get_queries_data():

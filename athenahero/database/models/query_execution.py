@@ -129,7 +129,7 @@ class QueryExecution(db.Model):
         db.Text,
         index=False,
         unique=False, 
-        nullable=True
+        nullable=False
     )
 
     def __repr__(self):

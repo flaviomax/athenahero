@@ -8,10 +8,8 @@ from datetime import datetime, timedelta
 from flask import current_app
 
 def register_query_execution_job():
-    # if current_app.config['ENV'] == 'production':
-        scheduler = BackgroundScheduler(
-            jobstores={}
-        )
+    if current_app.config['ENV'] == 'production':
+        scheduler = BackgroundScheduler()
         scheduler.add_job(
             name='last_30_days_updater',
             id='last_30_days_updater',
@@ -22,7 +20,7 @@ def register_query_execution_job():
             max_instances=1,
             next_run_time=datetime.now() + timedelta(seconds=3),
             misfire_grace_time=30
-            )
+        )
         scheduler.start()
 
         # Shut down the scheduler when exiting the app
