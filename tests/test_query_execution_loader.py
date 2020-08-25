@@ -1,6 +1,9 @@
 import uuid
+import boto3
+import pytest
 
-from athenahero.query_execution_loader.query_execution_loader_job import _parse_raw_query_execution
+from botocore.exceptions import HTTPClientError
+from athenahero.query_execution_loader.query_execution_loader_job import _parse_raw_query_execution, _list_all_workgroups
 
 from .test_base import app, db, session
 
@@ -36,3 +39,8 @@ def test_query_execution_parser(session):
     session.add(query_execution)
     session.commit()
     assert query_execution.query.get(temp_uuid) is not None
+
+def test_boto3_http_prevention(session):
+    athena_client = boto3.client('athena')
+    with pytest.raises(HTTPClientError):
+        workgroups = _list_all_workgroups(athena_client)

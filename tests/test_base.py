@@ -79,6 +79,7 @@ def test_db_insert(session):
         service_processing_time_in_millis=123,
         data_manifest_location="uau.manifest",
         data_scanned_in_bytes=123,
+        workgroup='test_workgroup'
     )
     session.add(query_execution)
     session.commit()
