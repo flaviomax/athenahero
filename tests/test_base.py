@@ -1,6 +1,7 @@
 import os
 import uuid
-from datetime import datetime
+from datetime import datetime, timedelta
+from random import randint
 
 import pytest
 
@@ -56,10 +57,9 @@ def session(db, request):
     request.addfinalizer(teardown)
     return session
 
-
-def test_db_insert(session):
+def get_basic_query_execution():
     temp_uuid = uuid.uuid4()
-    query_execution = QueryExecution(
+    return QueryExecution(
         id=temp_uuid,
         query_text="select * from uau",
         statement_type="DML",
@@ -70,7 +70,7 @@ def test_db_insert(session):
         context_catalog=None,
         status="SUCCEEDED",
         last_state_change_reason=None,
-        submission_datetime=datetime.now(),
+        submission_datetime=datetime.now() - timedelta(minutes=1),
         completion_datetime=datetime.now(),
         engine_execution_time_in_millis=123,
         total_execution_time_in_millis=123,
@@ -78,9 +78,13 @@ def test_db_insert(session):
         query_planning_time_in_millis=123,
         service_processing_time_in_millis=123,
         data_manifest_location="uau.manifest",
-        data_scanned_in_bytes=123,
+        data_scanned_in_bytes=randint(1, 1000000),
         workgroup='test_workgroup'
     )
+
+def test_db_insert(session):
+    query_execution = get_basic_query_execution()
+    temp_uuid = query_execution.id
     session.add(query_execution)
     session.commit()
 
