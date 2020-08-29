@@ -32,7 +32,7 @@ def _list_all_workgroups(athena_client):
     while response.get("NextToken") is not None:
         response = athena_client.list_work_groups(NextToken=response["NextToken"])
         all_workgroups += _extract_workgroup_names_from_payload(response)
-    return all_workgroups
+    return sorted(list(set(all_workgroups)))
 
 
 def _parse_raw_query_execution(raw_query_execution):
@@ -69,9 +69,10 @@ def _parse_raw_query_execution(raw_query_execution):
     return query_execution
 
 
-def populate_month_of_executions(deltadays=30):
+def populate_month_of_executions(athena_client = None, deltadays=30):
     logging.info("[query_execution_job] Starting")
-    athena_client = boto3.client("athena")
+    if athena_client is None:
+        athena_client = boto3.client("athena")
     min_day = datetime.now(timezone.utc) - timedelta(days=deltadays)
     min_found = datetime.now(timezone.utc)
     next_token = None
@@ -91,6 +92,8 @@ def populate_month_of_executions(deltadays=30):
             _save_batch_query_executions_to_db(executions)
             min_found = min([i["Status"].get("CompletionDateTime") for i in executions])
             logging.info(f"[query_execution_job] Fetched queries up to {min_found}")
+        min_day = datetime.now(timezone.utc) - timedelta(days=deltadays)
+        min_found = datetime.now(timezone.utc)
 
     logging.info("[query_execution_job] Done!")
 
