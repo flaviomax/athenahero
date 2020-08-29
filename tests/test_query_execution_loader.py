@@ -5,7 +5,8 @@ import pytest
 from botocore.exceptions import HTTPClientError
 from botocore.stub import Stubber, ANY
 from athenahero.query_execution_loader.query_execution_loader_job import _parse_raw_query_execution, _list_all_workgroups, populate_month_of_executions, _get_successful_queries
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
+from athenahero.database.models.query_execution import QueryExecution
 
 from .test_base import app, db, session
 
@@ -20,7 +21,9 @@ def boto_list_query_executions_response(MaxResults=50, overload_vals = {}):
         }
     return {**payload, **overload_vals}
 
-def boto_batch_get_query_execution_response(query_ids, overload_vals = {}):
+def boto_batch_get_query_execution_response(query_ids = None, overload_vals = {}):
+    if query_ids is None:
+        query_ids = [str(uuid.uuid4()) for i in range(50)]
     payload = {
         "QueryExecutions": [get_query_execution_payload(query_id=i) for i in query_ids]
     }
@@ -51,9 +54,9 @@ def get_query_execution_payload(query_id = None, overload_vals = {}):
             "TotalExecutionTimeInMillis": 2300
         },
         "Status": {
-            "CompletionDateTime": datetime.now() - timedelta(minutes=1),
+            "CompletionDateTime": datetime.now(timezone.utc) - timedelta(minutes=1),
             "State": "SUCCEEDED",
-            "SubmissionDateTime": datetime.now() - timedelta(minutes=10)
+            "SubmissionDateTime": datetime.now(timezone.utc) - timedelta(minutes=10)
         },
         "WorkGroup": "primary"
     }
@@ -137,54 +140,119 @@ def test_successful_queries_filter(session):
     assert len(response) == len(query_ids) - 1
 
 
-# def test_full_job(session):
-#     athena_client = boto3.client('athena')
-#     athena_stubber = Stubber(athena_client)
+def test_full_job(session):
+    """Test a call to populate_month_of_executions."""
+    athena_client = boto3.client('athena')
+    athena_stubber = Stubber(athena_client)
     
-#     # stub workgroups response
-#     workgroups_first_response = get_list_workgroups_response({"NextToken": "abc"})
-#     workgroups_second_response = get_list_workgroups_response({
-#         'WorkGroups': [{
-#             'Name': 'test_workgroup3',
-#             'State': 'ENABLED',
-#             'Description': '',
-#             'CreationTime': datetime(2015, 1, 1)
-#         }]
-#     })
-#     athena_stubber.add_response('list_work_groups', workgroups_first_response, {})
-#     athena_stubber.add_response('list_work_groups', workgroups_second_response, {"NextToken": "abc"})
+    # ----------------------------------------------------
+    # stub workgroups response
+    # ----------------------------------------------------
+    workgroups_first_response = get_list_workgroups_response({"NextToken": "abc"})
+    workgroups_second_response = get_list_workgroups_response({
+        'WorkGroups': [{
+            'Name': 'test_workgroup3',
+            'State': 'ENABLED',
+            'Description': '',
+            'CreationTime': datetime(2015, 1, 1)
+        }]
+    })
+    athena_stubber.add_response('list_work_groups', workgroups_first_response, {})
+    athena_stubber.add_response('list_work_groups', workgroups_second_response, {"NextToken": "abc"})
     
-#     # stub list_query_executions
-#     athena_stubber.add_response(
-#         'list_query_executions',
-#         boto_list_query_executions_response(),
-#         {'WorkGroup': 'test_workgroup1', 'MaxResults': 50}
-#     )
-#     athena_stubber.add_response(
-#         'list_query_executions',
-#         boto_list_query_executions_response(MaxResults=0),
-#         {'WorkGroup': 'test_workgroup2', 'MaxResults': 50}
-#     )
-#     athena_stubber.add_response(
-#         'list_query_executions',
-#         boto_list_query_executions_response(overload_vals={"NextToken": "abc"}),
-#         {'WorkGroup': 'test_workgroup3', 'MaxResults': 50}
-#     )
-#     athena_stubber.add_response(
-#         'list_query_executions',
-#         boto_list_query_executions_response(),
-#         {'WorkGroup': 'test_workgroup3', 'MaxResults': 50}
-#     )
+    # ----------------------------------------------------
+    # stub operations for workgroup1
+    # ----------------------------------------------------
+    athena_stubber.add_response(
+        'list_query_executions',
+        boto_list_query_executions_response(),
+        {'WorkGroup': 'test_workgroup1', 'MaxResults': 50}
+    )
+    workgroup1_response = boto_batch_get_query_execution_response()
+    workgroup1_response["QueryExecutions"][10]["Status"]["CompletionDateTime"] = datetime.now(timezone.utc) - timedelta(days=90)
+    for query_execution in workgroup1_response["QueryExecutions"]:
+        query_execution["WorkGroup"] = "test_workgroup1"
+    athena_stubber.add_response(
+        'batch_get_query_execution',
+        workgroup1_response,
+        {"QueryExecutionIds": ANY}
+    )
 
-#     # stub batch_get_query_executions
-#     athena_stubber.add_response(
-#         'list_query_executions',
-#         boto_list_query_executions_response(),
-#         {'WorkGroup': 'test_workgroup3', 'MaxResults': 50}
-#     )
+    # ----------------------------------------------------
+    # stub operations for workgroup2
+    # ----------------------------------------------------
+
+    athena_stubber.add_response(
+        'list_query_executions',
+        boto_list_query_executions_response(MaxResults=0),
+        {'WorkGroup': 'test_workgroup2', 'MaxResults': 50}
+    )
+
+    # ----------------------------------------------------
+    # stub operations for workgroup3
+    # ----------------------------------------------------
+    athena_stubber.add_response(
+        'list_query_executions',
+        boto_list_query_executions_response(overload_vals={"NextToken": "abc"}),
+        {'WorkGroup': 'test_workgroup3', 'MaxResults': 50}
+    )
+    workgroup3_first_response = boto_batch_get_query_execution_response()
+    for query_execution in workgroup3_first_response["QueryExecutions"]:
+        query_execution["WorkGroup"] = "test_workgroup3"
+    athena_stubber.add_response(
+        'batch_get_query_execution',
+        workgroup3_first_response,
+        {"QueryExecutionIds": ANY}
+    )
+
+    athena_stubber.add_response(
+        'list_query_executions',
+        boto_list_query_executions_response(),
+        {'WorkGroup': 'test_workgroup3', 'MaxResults': 50, "NextToken": "abc"}
+    )
+    workgroup3_second_response = boto_batch_get_query_execution_response()
+    for query_execution in workgroup3_second_response["QueryExecutions"]:
+        query_execution["WorkGroup"] = "test_workgroup3"
+    athena_stubber.add_response(
+        'batch_get_query_execution',
+        workgroup3_second_response,
+        {"QueryExecutionIds": ANY}
+    )
+
+    # ----------------------------------------------------
+    # finally, run the test
+    # ----------------------------------------------------
+    with athena_stubber:
+        populate_month_of_executions(athena_client=athena_client)
 
 
-#     with athena_stubber:
-#         populate_month_of_executions(athena_client=athena_client)
+    # ----------------------------------------------------
+    # assertions
+    # ----------------------------------------------------
+    athena_stubber.assert_no_pending_responses()
+    w1_queries = session.query(
+        QueryExecution.id
+    ).filter(
+        QueryExecution.workgroup == 'test_workgroup1'
+    ).all()
 
+    assert w1_queries is not None
+    assert len(w1_queries) == 49
 
+    w2_queries = session.query(
+        QueryExecution.id
+    ).filter(
+        QueryExecution.workgroup == 'test_workgroup2'
+    ).all()
+
+    assert w2_queries is not None
+    assert len(w2_queries) == 0
+
+    w3_queries = session.query(
+        QueryExecution.id
+    ).filter(
+        QueryExecution.workgroup == 'test_workgroup3'
+    ).all()
+
+    assert w3_queries is not None
+    assert len(w3_queries) == 98

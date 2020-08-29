@@ -85,15 +85,19 @@ def populate_month_of_executions(athena_client = None, deltadays=30):
             next_ids = next_queries.get("QueryExecutionIds")
             if not next_ids:
                 break
-            next_token = next_queries.get("NextToken")
 
-            # TODO: for v0, we will only be fetching successful queries
             executions = _get_successful_queries(athena_client, next_ids)
             _save_batch_query_executions_to_db(executions)
             min_found = min([i["Status"].get("CompletionDateTime") for i in executions])
             logging.info(f"[query_execution_job] Fetched queries up to {min_found}")
+
+            if next_queries.get("NextToken") is None:
+                break
+            next_token = next_queries["NextToken"]
+
         min_day = datetime.now(timezone.utc) - timedelta(days=deltadays)
         min_found = datetime.now(timezone.utc)
+        next_token = None
 
     logging.info("[query_execution_job] Done!")
 
