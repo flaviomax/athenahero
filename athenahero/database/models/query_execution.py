@@ -35,4 +35,5 @@ class QueryExecution(db.Model):
     def __repr__(self):
         return f"<Query Execution {self.id}>"
 
+
 Index("query_executions_query_text_md5_index", func.md5(QueryExecution.query_text))

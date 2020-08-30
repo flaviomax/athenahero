@@ -69,7 +69,7 @@ def _parse_raw_query_execution(raw_query_execution):
     return query_execution
 
 
-def populate_month_of_executions(athena_client = None, deltadays=30):
+def populate_month_of_executions(athena_client=None, deltadays=30):
     logging.info("[query_execution_job] Starting")
     if athena_client is None:
         athena_client = boto3.client("athena")

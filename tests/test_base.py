@@ -57,6 +57,7 @@ def session(db, request):
     request.addfinalizer(teardown)
     return session
 
+
 def get_basic_query_execution():
     temp_uuid = uuid.uuid4()
     return QueryExecution(
@@ -79,8 +80,9 @@ def get_basic_query_execution():
         service_processing_time_in_millis=123,
         data_manifest_location="uau.manifest",
         data_scanned_in_bytes=randint(1, 1000000),
-        workgroup='test_workgroup'
+        workgroup="test_workgroup",
     )
+
 
 def test_db_insert(session):
     query_execution = get_basic_query_execution()
