@@ -4,6 +4,7 @@ from .test_base import app, db, session, get_basic_query_execution
 from athenahero.home.monthly_chart_data_generator import data_read_by_day, data_read_by_workgroup, get_queries_data, get_naive_queries_data
 from datetime import datetime, timedelta
 from statistics import mean 
+from athenahero.database.models.query_execution import QueryExecution
 
 def bytes2gb(data):
     return data / 1000000000.0
@@ -39,8 +40,6 @@ def seed_db_objects(session):
 
     return query_execution1, query_execution2, query_execution3, query_execution4
 
-
-# TODO: test empty versions
 def test_data_read_by_day(seed_db_objects):
     query_execution1, query_execution2, query_execution3, query_execution4 = seed_db_objects
     labels, values = data_read_by_day()
@@ -50,6 +49,11 @@ def test_data_read_by_day(seed_db_objects):
     assert values[0] == bytes2gb(query_execution2.data_scanned_in_bytes + query_execution4.data_scanned_in_bytes)
     assert values[1] == bytes2gb(query_execution1.data_scanned_in_bytes + query_execution3.data_scanned_in_bytes)
 
+def test_empty_data_read_by_day(session):
+    labels, values = data_read_by_day()
+    assert labels == []
+    assert values == []
+
 def test_data_read_by_workgroup(seed_db_objects):
     query_execution1, query_execution2, query_execution3, query_execution4 = seed_db_objects
     labels, values = data_read_by_workgroup()
@@ -58,6 +62,11 @@ def test_data_read_by_workgroup(seed_db_objects):
     results = sorted(list(zip(labels, values)))
     assert results[0] == ('test_workgroup', bytes2gb(query_execution1.data_scanned_in_bytes + query_execution2.data_scanned_in_bytes))
     assert results[1] == ('test_workgroup2', bytes2gb(query_execution3.data_scanned_in_bytes + query_execution4.data_scanned_in_bytes))
+
+def test_empty_data_read_by_workgroup(session):
+    labels, values = data_read_by_workgroup()
+    assert labels == []
+    assert values == []
 
 def test_get_queries_data(seed_db_objects):
     query_execution1, query_execution2, query_execution3, query_execution4 = seed_db_objects
@@ -79,6 +88,10 @@ def test_get_queries_data(seed_db_objects):
     assert float(result[2]) == bytes2gb(mean(data_read))
     assert float(result[3]) == bytes2gb(sum(data_read))
 
+def test_empty_get_queries_data(session):
+    most_expensive_queries = get_queries_data()
+    assert most_expensive_queries == []
+
 def test_get_naive_queries_data(seed_db_objects):
     query_execution1, query_execution2, query_execution3, query_execution4 = seed_db_objects
     naive_queries = get_naive_queries_data()
@@ -93,3 +106,17 @@ def test_get_naive_queries_data(seed_db_objects):
     assert result[1] == 1
     assert float(result[2]) == bytes2gb(query_execution3.data_scanned_in_bytes)
     assert float(result[3]) == bytes2gb(query_execution3.data_scanned_in_bytes)
+
+def test_empty_get_naive_queries_data(session):
+    naive_queries = get_naive_queries_data()
+    assert naive_queries['most_expensive_queries'] == []
+    assert naive_queries['total_bytes_read'] == (None,)
+
+def test_get_naive_queries_data_no_naives(session, seed_db_objects):
+    query_execution1, query_execution2, query_execution3, query_execution4 = seed_db_objects
+    query_execution3.query_text = "select * from uau3"
+    session.commit()
+
+    naive_queries = get_naive_queries_data()
+    assert naive_queries['most_expensive_queries'] == []
+    assert naive_queries['total_bytes_read'] == (None,)
