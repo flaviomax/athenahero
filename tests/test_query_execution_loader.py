@@ -14,7 +14,7 @@ from athenahero.query_execution_loader.query_execution_loader_job import (
     populate_month_of_executions,
 )
 
-from .test_base import session  # noqa: F401
+from .test_base import app, db, session  # noqa: F401
 
 
 def boto_list_query_executions_response(MaxResults=50, overload_vals={}):

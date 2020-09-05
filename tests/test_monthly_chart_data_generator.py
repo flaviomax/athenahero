@@ -10,7 +10,12 @@ from athenahero.home.monthly_chart_data_generator import (
     get_queries_data,
 )
 
-from .test_base import get_basic_query_execution, session  # noqa: F401
+from .test_base import (  # noqa: F401
+    app,
+    db,
+    get_basic_query_execution,
+    session,
+)
 
 
 def bytes2gb(data):
