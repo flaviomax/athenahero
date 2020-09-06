@@ -7,7 +7,9 @@ AthenaHero is heavily inspired by [PGHero, a performance dashboard for Postgres]
 
 ### Installation
 
-AthenaHero is available as a Docker image, and can be run using the `docker-compose.yml` at the root of this project.
+AthenaHero is available as a Docker image, and an example setup is present in the `docker-compose.yml` file at the root of this project.
+
+#### To get started immediately:
 Before running, you **must** set these three env vars on the host:
 - `AWS_ACCESS_KEY_ID`
 - `AWS_SECRET_ACCESS_KEY`

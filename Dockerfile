@@ -10,6 +10,8 @@ RUN \
  python -m pip install -r requirements.txt --no-cache-dir && \
  apk --purge del .build-deps
 
-COPY . .
+COPY Makefile README.md wsgi.py ./
+COPY athenahero ./athenahero
+COPY migrations ./migrations
 
 CMD ["make", "start"]

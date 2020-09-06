@@ -12,9 +12,7 @@ services:
       timeout: 10s
       retries: 5
   athenahero:
-    build:
-      context: .
-      dockerfile: "Dockerfile"
+    image: flaviomax/athenahero:0.1.0.b0
     ports:
       - 5000:5000
     environment:
@@ -23,10 +21,6 @@ services:
       AWS_ACCESS_KEY_ID:
       AWS_SECRET_ACCESS_KEY:
       AWS_DEFAULT_REGION:
-    volumes: 
-      - "./athenahero:/app/athenahero"
-      - "./Makefile:/app/Makefile"
-      - "./tests:/app/tests"
     depends_on: ["db"]
     command: 
         make start
