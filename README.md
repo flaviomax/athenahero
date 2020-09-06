@@ -23,6 +23,17 @@ AthenaHero will be available on `http://localhost:5000` on the host machine.
 
 #### Other options
 
+##### Authentication
+
+AthenaHero supports basic HTTP authentication. Before starting the server, set the env vars:
+
+- `ATHENAHERO_USERNAME`
+- `ATHENAHERO_PASSWORD`
+
+And the browser will require authentication.
+
+##### Database
+
 Set the env var `ATHENAHERO_SQLALCHEMY_DATABASE_URI=potsgresql://user:pass@host:5432/db` to your own postgres installation. 
 
 ### How it works
@@ -34,4 +45,4 @@ The IAM credentials setup using env vars must have permissions for `listing` and
 
 ### Known Issues
 
-- In the current AthenHero version, _Cost_ is just measured as **5.00 USD for TB** read, **independent of which AWS Region** AthenaHero is querying. This pricing heuristic **is only valid for some regions**, such as `us-east-1` and `us-west-2`. This will be fixed on a future version.  
+- In the current AthenaHero version, _Cost_ is just measured as **5.00 USD for TB** read, **independent of which AWS Region** AthenaHero is querying. This pricing heuristic **is only valid for some regions**, such as `us-east-1` and `us-west-2`. This will be fixed on a future version.  
