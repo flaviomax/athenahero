@@ -26,7 +26,11 @@ AthenaHero will be available on `http://localhost:5000` on the host machine.
 Set the env var `ATHENAHERO_SQLALCHEMY_DATABASE_URI=potsgresql://user:pass@host:5432/db` to your own postgres installation. 
 
 ### How it works
-AthenaHero polls AWS from time to time and fetches all query data for the last 30 days. 
+
+AthenaHero polls AWS from time to time and fetches all Athena query metadata for the last 30 days. 
+The IAM credentials setup using env vars must have permissions for `listing` and `reading` Athena query history data. **Athenahero does not use any API calls that cost you money**, and using Athenahero should not impact your AWS Billing (except by _reducing_ it by giving you valuable insight! :) ).
+
+ <br>
 
 ### Known Issues
 
