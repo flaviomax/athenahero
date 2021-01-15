@@ -15,7 +15,7 @@ def register_query_execution_job():
             id="last_30_days_updater",
             func=query_execution_loader_job.populate_month_of_executions,
             trigger="interval",
-            hours=6,
+            minutes=30,
             coalesce=True,
             max_instances=1,
             next_run_time=datetime.now() + timedelta(seconds=3),

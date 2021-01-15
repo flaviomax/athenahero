@@ -22,7 +22,7 @@ class QueryExecution(db.Model):
     status = db.Column(db.String(10), index=False, unique=False, nullable=False)
     last_state_change_reason = db.Column(db.Text, index=False, unique=False, nullable=True)
     submission_datetime = db.Column(db.TIMESTAMP, index=True, unique=False, nullable=False)
-    completion_datetime = db.Column(db.TIMESTAMP, index=False, unique=False, nullable=False)
+    completion_datetime = db.Column(db.TIMESTAMP, index=False, unique=False, nullable=True)
     engine_execution_time_in_millis = db.Column(db.Integer, index=False, unique=False, nullable=True)
     total_execution_time_in_millis = db.Column(db.Integer, index=False, unique=False, nullable=False)
     query_queue_time_in_millis = db.Column(db.Integer, index=False, unique=False, nullable=True)

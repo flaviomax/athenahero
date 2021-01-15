@@ -19,7 +19,7 @@ def _get_next_query_ids(athena_client, next_token, workgroup):
 
 def _get_successful_queries(athena_client, query_ids):
     query_executions = athena_client.batch_get_query_execution(QueryExecutionIds=query_ids).get("QueryExecutions")
-    return [q for q in query_executions if q["Status"].get("State") == "SUCCEEDED"]
+    return [q for q in query_executions]
 
 
 def _extract_workgroup_names_from_payload(workgroups_payload):
@@ -80,6 +80,8 @@ def populate_month_of_executions(athena_client=None, deltadays=30):
 
     for workgroup in all_workgroups:
         logging.info(f"[query_execution_job] Fetching data for workgroup {workgroup}")
+        if workgroup == 'airflow':
+            continue
         while min_found > min_day:
             next_queries = _get_next_query_ids(athena_client, next_token, workgroup)
             next_ids = next_queries.get("QueryExecutionIds")

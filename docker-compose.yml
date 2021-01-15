@@ -11,6 +11,8 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
+    ports:
+      - 1670:5432
   athenahero:
     image: flaviomax/athenahero:0.1.0.b0
     ports:
@@ -23,6 +25,11 @@ services:
       AWS_DEFAULT_REGION:
       ATHENAHERO_USERNAME:
       ATHENAHERO_PASSWORD:
+    volumes: 
+      - "./athenahero:/app/athenahero"
+      - "./Makefile:/app/Makefile"
+      - "./tests:/app/tests"
+      - "./migrations:/app/migrations"
     depends_on: ["db"]
     command: 
         make start
