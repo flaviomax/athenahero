@@ -15,6 +15,8 @@ Before running, you **must** set these three env vars on the host:
 - `AWS_SECRET_ACCESS_KEY`
 - `AWS_DEFAULT_REGION`
 
+In case you are using AWS session tokens, you must also set the `AWS_SESSION_TOKEN` var on the host.
+
 And then simply run:
 
 ```docker-compose up athenahero```
